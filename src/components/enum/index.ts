@@ -1,0 +1,16 @@
+export const dishTypes: string[] = [
+  'lunch',
+  'main course',
+  'main dish',
+  'dinner',
+  'condiment',
+  'dip',
+  'sauce',
+  'spread',
+  'bread',
+  'antipasto',
+  'salad',
+  'starter',
+  'snack',
+  'appetizer',
+];
