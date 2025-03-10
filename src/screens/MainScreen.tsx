@@ -1,19 +1,31 @@
 import {FlatList, RefreshControl, SafeAreaView, StyleSheet} from 'react-native';
 import {useCallback, useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 import {useAppDispatch} from '../hooks/useAppDispatch.ts';
 import {recipeActions} from '../redux/slices/recipeSlice.ts';
 
 import {CategoryList, Recipes, Search, Welcome} from '../components';
+import {Routes} from './routes/routes.ts';
 
 export const MainScreen = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [page, _] = useState<number>(5);
+  const [active, setActive] = useState('');
+
+  const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(recipeActions.getAll(page));
   }, [page, dispatch]);
+
+  useEffect(() => {
+    if (active !== ''){
+      dispatch(recipeActions.searchByQuery(active));
+      navigation.navigate(Routes.Search);
+    }
+  }, [navigation,active,dispatch]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -32,7 +44,7 @@ export const MainScreen = () => {
           <>
             <Welcome />
             <Search isHomePage/>
-            <CategoryList />
+            <CategoryList active={active} setActive={setActive}/>
             <Recipes />
           </>
         }

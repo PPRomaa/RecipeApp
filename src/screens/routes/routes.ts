@@ -11,6 +11,7 @@ export enum Routes {
   Search = 'Search',
   SearchScreen = 'SearchScreen',
   Profile = 'Profile',
+  ProfileScreen = 'ProfileScreen',
 }
 
 export type MainScreenParams = {[Routes.MainScreen]: undefined};

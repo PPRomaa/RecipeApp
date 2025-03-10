@@ -7,8 +7,8 @@ import {
 } from 'react-native';
 
 import {useAppSelector} from '../hooks/useAppSelector.ts';
-import {useAppDispatch} from '../hooks/useAppDispatch.ts';
 import {recipeActions} from '../redux/slices/recipeSlice.ts';
+import {useAppDispatch} from '../hooks/useAppDispatch.ts';
 
 import {RecipeCard} from './common/RecipeCard.tsx';
 import {RecipeInterface} from '../interfaces/recipe.interface.ts';

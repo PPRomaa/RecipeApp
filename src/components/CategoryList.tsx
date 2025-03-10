@@ -1,10 +1,13 @@
+import React from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useState} from 'react';
-import {dishTypes} from './enum';
+import {dishTypes} from '../enum';
 
-export const CategoryList = () => {
-  const [active, setActive] = useState('');
+interface IProps {
+  active: string;
+  setActive: (item: string) => void;
+}
 
+export const CategoryList: React.FC<IProps> = ({active, setActive}) => {
   return (
     <View style={styles.container}>
       <FlatList

@@ -31,7 +31,7 @@ export const SearchTab = () => {
             <Search />
             {!searchRecipes && (
               <View style={styles.textBlock}>
-                <Text style={styles.text}>Lets find something!</Text>
+                <Text style={styles.text}>Let's find something!</Text>
               </View>
             )}
             {searchRecipes && (
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
   text: {
     color: '#312651',
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
   },
 });

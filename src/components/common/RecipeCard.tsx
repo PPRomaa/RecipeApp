@@ -1,9 +1,12 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {RecipeInterface} from '../../interfaces/recipe.interface.ts';
-import {useNavigation} from '@react-navigation/native';
-import {RecipeNavigationProps, Routes} from '../../screens/routes/routes.ts';
 import React from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+
 import {useAppSelector} from '../../hooks/useAppSelector.ts';
+import {useAuth} from '../../context/AuthContext.tsx';
+
+import {RecipeInterface} from '../../interfaces/recipe.interface.ts';
+import {RecipeNavigationProps, Routes} from '../../screens/routes/routes.ts';
 
 export const RecipeCard: React.FC<{
   item: RecipeInterface;
@@ -12,6 +15,7 @@ export const RecipeCard: React.FC<{
 }> = ({item, handleAdd, handleRemove}) => {
   const savedRecipes = useAppSelector(state => state.recipes.savedRecipes);
   const navigation = useNavigation<RecipeNavigationProps>();
+  const { authState } = useAuth();
 
   const handlePress = (id: string) => {
     navigation.navigate(Routes.RecipeInfo, {id});
@@ -69,7 +73,7 @@ export const RecipeCard: React.FC<{
             ) : null}
           </View>
         </View>
-        {isSaved ? (
+        {authState?.authenticated ? ( isSaved ? (
           <TouchableOpacity style={styles.addIconBlock} onPress={() => handleRemove?.(item.id)}>
             <Image
               source={{
@@ -78,7 +82,7 @@ export const RecipeCard: React.FC<{
               style={styles.addImage}
             />
           </TouchableOpacity>
-          ) : (
+        ) : (
           <TouchableOpacity style={styles.addIconBlock} onPress={() => handleAdd(item as RecipeInterface)}>
             <Image
               source={{
@@ -87,7 +91,7 @@ export const RecipeCard: React.FC<{
               style={styles.addImage}
             />
           </TouchableOpacity>
-        )}
+        )) : null}
       </View>
     </TouchableOpacity>
   );
@@ -108,6 +112,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
   },
   title: {
+    width: '95%',
     fontSize: 16,
     fontWeight: 'bold',
     color: '#312651',

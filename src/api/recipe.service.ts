@@ -1,6 +1,6 @@
 import {AxiosRes, axiosService} from './axios.service.ts';
 
-import {IComplex, RecipeArr, RecipeInterface} from '../interfaces/recipe.interface.ts';
+import { RecipeArr, RecipeInterface} from '../interfaces/recipe.interface.ts';
 
 const urls = {
   random: '/random',
@@ -11,8 +11,10 @@ const urls = {
 export const recipeService = {
   getAllRecipes: (number: number): AxiosRes<RecipeArr> =>
     axiosService.get(`${urls.random}?number=${number}`),
-  getComplexSearch: (title: string): AxiosRes <IComplex> =>
+  getComplexSearch: <T>(title: string): AxiosRes<T> =>
     axiosService.get(`${urls.complexSearch}?query=${title}`),
+  getByType: <T>(title: string): AxiosRes<T> =>
+    axiosService.get(`${urls.complexSearch}?type=${title}`),
   getFullInformation: (id: string): AxiosRes <RecipeInterface> =>
     axiosService.get(`${id}${urls.information}`),
 };

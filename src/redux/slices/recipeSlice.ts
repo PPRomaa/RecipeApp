@@ -58,11 +58,9 @@ const updateState = createAsyncThunk<RecipeInterface[], number>(
 );
 const searchByQuery = createAsyncThunk<IComplex, string>(
   'recipeSlice/searchByQuery',
-  async (title, {rejectWithValue}) => {
+  async (title, { rejectWithValue }) => {
     try {
-      const {data}: {data: IComplex} = await recipeService.getComplexSearch(
-        title,
-      );
+      const { data } = await recipeService.getComplexSearch<IComplex>(title);
       return data;
     } catch (e) {
       const err = e as AxiosError;
@@ -70,6 +68,19 @@ const searchByQuery = createAsyncThunk<IComplex, string>(
     }
   },
 );
+const searchByCategory = createAsyncThunk<IComplex, string>(
+  'recipeSlice/searchByCategory',
+  async (category, { rejectWithValue }) => {
+    try {
+      const { data } = await recipeService.getByType<IComplex>(category);
+      return data;
+    } catch (e) {
+      const err = e as AxiosError;
+      return rejectWithValue(err.response?.data);
+    }
+  },
+);
+
 const searchFullInfo = createAsyncThunk<RecipeInterface, string>(
   'recipeSlice/searchFullInfo',
   async (id, {rejectWithValue}) => {
@@ -125,6 +136,9 @@ const recipesSlice = createSlice({
       .addCase(searchByQuery.fulfilled, (state, action) => {
         state.searchRecipes = action.payload;
       })
+      .addCase(searchByCategory.fulfilled, (state, action) => {
+        state.searchRecipes = action.payload;
+      })
       .addCase(searchFullInfo.fulfilled, (state, action) => {
         state.recipe = action.payload;
       }),
@@ -139,6 +153,7 @@ export const recipeActions = {
   getAll,
   updateState,
   searchByQuery,
+  searchByCategory,
   searchFullInfo,
   addSave,
   chooseRecipe,

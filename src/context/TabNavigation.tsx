@@ -82,7 +82,7 @@ export const TabNavigation = () => {
         }}
       />
       <Tabs.Screen
-        name={Routes.Profile}
+        name={Routes.ProfileScreen}
         component={ProfileScreen}
         options={{
           tabBarIcon: ({focused}) => (

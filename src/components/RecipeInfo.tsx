@@ -1,12 +1,22 @@
 import React from 'react';
-import {FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 
 import {useAppSelector} from '../hooks/useAppSelector.ts';
+import {recipeActions} from '../redux/slices/recipeSlice.ts';
+
+import {useAppDispatch} from '../hooks/useAppDispatch.ts';
+import {useAuth} from '../context/AuthContext.tsx';
+
 import {RecipeRouteProps, Routes} from '../screens/routes/routes.ts';
 import {RecipeInterface} from '../interfaces/recipe.interface.ts';
-import {recipeActions} from '../redux/slices/recipeSlice.ts';
-import {useAppDispatch} from '../hooks/useAppDispatch.ts';
 
 interface IProps {
   isRecipe?: boolean;
@@ -24,6 +34,7 @@ export const RecipeInfo: React.FC<IProps> = ({isRecipe, isSaved}) => {
   const savedRecipes = useAppSelector(state => state.recipes.savedRecipes);
 
   const {params} = useRoute<RecipeRouteProps<Routes.RecipeInfo>>();
+  const {authState} = useAuth();
   const dispatch = useAppDispatch();
 
   let recipe: RecipeInterface | null = null;
@@ -34,9 +45,10 @@ export const RecipeInfo: React.FC<IProps> = ({isRecipe, isSaved}) => {
   } else if (!isRecipe && Array.isArray(recipes)) {
     recipe = recipes.find(item => item.id === params.id) ?? null;
   }
-  const savedRecipe = recipe && recipe.id
-    ? savedRecipes.some(stateRecipe => stateRecipe.id === recipe?.id)
-    : false;
+  const savedRecipe =
+    recipe && recipe.id
+      ? savedRecipes.some(stateRecipe => stateRecipe.id === recipe?.id)
+      : false;
 
   const handleAdd = (item: RecipeInterface) => {
     dispatch(recipeActions.addSave(item));
@@ -54,27 +66,33 @@ export const RecipeInfo: React.FC<IProps> = ({isRecipe, isSaved}) => {
             resizeMode="cover"
           />
           <View style={styles.descriptionBlock}>
-            <View style={styles.desciptionTitle}>
+            <View style={styles.descriptionTitle}>
               <Text style={styles.recipeTittle}>{recipe?.title}</Text>
-              {savedRecipe ? (
-                <TouchableOpacity style={styles.addIconBlock} onPress={() => handleRemove?.(recipe?.id)}>
-                  <Image
-                    source={{
-                      uri: 'https://img.icons8.com/?size=100&id=3062&format=png&color=000000',
-                    }}
-                    style={styles.addImage}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={styles.addIconBlock} onPress={() => handleAdd(recipe as RecipeInterface)}>
-                  <Image
-                    source={{
-                      uri: 'https://img.icons8.com/?size=100&id=1501&format=png&color=000000',
-                    }}
-                    style={styles.addImage}
-                  />
-                </TouchableOpacity>
-              )}
+              {authState?.authenticated ? (
+                savedRecipe ? (
+                  <TouchableOpacity
+                    style={styles.addIconBlock}
+                    onPress={() => handleRemove?.(recipe?.id)}>
+                    <Image
+                      source={{
+                        uri: 'https://img.icons8.com/?size=100&id=3062&format=png&color=000000',
+                      }}
+                      style={styles.addImage}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.addIconBlock}
+                    onPress={() => handleAdd(recipe as RecipeInterface)}>
+                    <Image
+                      source={{
+                        uri: 'https://img.icons8.com/?size=100&id=1501&format=png&color=000000',
+                      }}
+                      style={styles.addImage}
+                    />
+                  </TouchableOpacity>
+                )
+              ) : null}
             </View>
             <FlatList
               data={recipe?.dishTypes}
@@ -131,6 +149,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   recipeTittle: {
+    width: '90%',
     fontSize: 22,
     fontWeight: 'bold',
     color: '#312651',
@@ -153,8 +172,8 @@ const styles = StyleSheet.create({
   colorText: {
     color: '#444262',
   },
-  desciptionTitle:{
-    position:'relative',
+  descriptionTitle: {
+    position: 'relative',
   },
   addImage: {
     height: 26,
